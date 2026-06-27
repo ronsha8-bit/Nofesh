@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>זמן עד לנופש חברה</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sky: #1a6fa8;
+      --ocean: #0d3f6b;
+      --sun: #f5c842;
+      --sand: #f5e6c8;
+      --foam: #e8f4fd;
+      --deep: #0a2540;
+    }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: linear-gradient(160deg, var(--ocean) 0%, var(--sky) 50%, #5ab4e5 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated waves */
+    .waves {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 180px;
+      pointer-events: none;
+    }
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100'%3E%3Cpath fill='%23e8f4fd' fill-opacity='0.15' d='M0,50 C360,100 1080,0 1440,50 L1440,100 L0,100 Z'/%3E%3C/svg%3E") repeat-x;
+      background-size: 50% 100%;
+      animation: wave-move 8s linear infinite;
+    }
+    .wave:nth-child(2) {
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100'%3E%3Cpath fill='%23e8f4fd' fill-opacity='0.1' d='M0,60 C400,10 1000,90 1440,40 L1440,100 L0,100 Z'/%3E%3C/svg%3E") repeat-x;
+      background-size: 50% 100%;
+      animation: wave-move 12s linear infinite reverse;
+      bottom: 10px;
+    }
+    .wave:nth-child(3) {
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 100'%3E%3Cpath fill='%23f5e6c8' fill-opacity='0.12' d='M0,40 C480,90 960,10 1440,60 L1440,100 L0,100 Z'/%3E%3C/svg%3E") repeat-x;
+      background-size: 50% 100%;
+      animation: wave-move 16s linear infinite;
+      bottom: 20px;
+    }
+    @keyframes wave-move {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Sun */
+    .sun {
+      position: fixed;
+      top: 40px;
+      left: 60px;
+      width: 80px;
+      height: 80px;
+      background: var(--sun);
+      border-radius: 50%;
+      box-shadow: 0 0 0 12px rgba(245,200,66,0.2), 0 0 0 24px rgba(245,200,66,0.1);
+      animation: pulse-sun 4s ease-in-out infinite;
+    }
+    @keyframes pulse-sun {
+      0%, 100% { box-shadow: 0 0 0 12px rgba(245,200,66,0.2), 0 0 0 24px rgba(245,200,66,0.1); }
+      50% { box-shadow: 0 0 0 18px rgba(245,200,66,0.25), 0 0 0 36px rgba(245,200,66,0.12); }
+    }
+
+    /* Card */
+    .card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 28px;
+      padding: 48px 56px;
+      text-align: center;
+      max-width: 680px;
+      width: 90vw;
+      position: relative;
+      z-index: 10;
+    }
+
+    .emoji-top {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      display: block;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: rgba(255,255,255,0.65);
+      font-size: 0.95rem;
+      font-weight: 300;
+      margin-bottom: 40px;
+    }
+
+    /* Countdown grid */
+    .countdown {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .unit-box {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 16px;
+      width: 110px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .unit-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+    }
+
+    .unit-number {
+      font-size: 3rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      transition: transform 0.15s ease;
+    }
+    .unit-number.tick {
+      transform: scale(1.1);
+    }
+
+    .unit-label {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Separator dots */
+    .sep {
+      color: rgba(255,255,255,0.4);
+      font-size: 2.2rem;
+      font-weight: 900;
+      align-self: flex-start;
+      padding-top: 22px;
+    }
+
+    /* Date line */
+    .date-line {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      font-weight: 300;
+    }
+    .date-line strong {
+      color: var(--sun);
+      font-weight: 700;
+    }
+
+    /* Finished state */
+    .finished {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .finished .big-emoji { font-size: 4rem; }
+    .finished h2 { color: var(--sun); font-size: 2rem; font-weight: 900; }
+    .finished p { color: rgba(255,255,255,0.7); font-size: 1rem; }
+
+    @media (max-width: 500px) {
+      .card { padding: 36px 24px; }
+      .unit-box { width: 72px; height: 76px; border-radius: 12px; }
+      .unit-number { font-size: 2rem; }
+      .sep { font-size: 1.6rem; padding-top: 18px; }
+      .countdown { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sun"></div>
+
+  <div class="waves">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <div class="card">
+    <span class="emoji-top">🏖️</span>
+    <h1>זמן עד לנופש חברה</h1>
+    <p class="subtitle">מתכוננים לכיף הגדול ✈️</p>
+
+    <div id="countdown-display">
+      <div class="countdown">
+        <div class="unit">
+          <div class="unit-box"><span class="unit-number" id="seconds">00</span></div>
+          <span class="unit-label">שניות</span>
+        </div>
+        <div class="sep">:</div>
+        <div class="unit">
+          <div class="unit-box"><span class="unit-number" id="minutes">00</span></div>
+          <span class="unit-label">דקות</span>
+        </div>
+        <div class="sep">:</div>
+        <div class="unit">
+          <div class="unit-box"><span class="unit-number" id="hours">00</span></div>
+          <span class="unit-label">שעות</span>
+        </div>
+        <div class="sep">:</div>
+        <div class="unit">
+          <div class="unit-box"><span class="unit-number" id="days">00</span></div>
+          <span class="unit-label">ימים</span>
+        </div>
+      </div>
+      <p class="date-line">נופש החברה יתחיל ב־<strong>2.7.2026 בשעה 09:00</strong> 🌅</p>
+    </div>
+
+    <div class="finished" id="finished-display">
+      <span class="big-emoji">🎉</span>
+      <h2>הנופש התחיל!</h2>
+      <p>בואו נהנה! 🥂🌊☀️</p>
+    </div>
+  </div>
+
+  <script>
+    const target = new Date('2026-07-02T09:00:00');
+
+    const elDays    = document.getElementById('days');
+    const elHours   = document.getElementById('hours');
+    const elMinutes = document.getElementById('minutes');
+    const elSeconds = document.getElementById('seconds');
+    const countdownDisplay = document.getElementById('countdown-display');
+    const finishedDisplay  = document.getElementById('finished-display');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick(el, val) {
+      const newVal = pad(val);
+      if (el.textContent !== newVal) {
+        el.classList.remove('tick');
+        void el.offsetWidth; // reflow
+        el.classList.add('tick');
+        el.textContent = newVal;
+        setTimeout(() => el.classList.remove('tick'), 150);
+      }
+    }
+
+    function update() {
+      const now  = new Date();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        countdownDisplay.style.display = 'none';
+        finishedDisplay.style.display  = 'flex';
+        return;
+      }
+
+      const totalSecs = Math.floor(diff / 1000);
+      const d = Math.floor(totalSecs / 86400);
+      const h = Math.floor((totalSecs % 86400) / 3600);
+      const m = Math.floor((totalSecs % 3600) / 60);
+      const s = totalSecs % 60;
+
+      tick(elDays,    d);
+      tick(elHours,   h);
+      tick(elMinutes, m);
+      tick(elSeconds, s);
+    }
+
+    update();
+    setInterval(update, 1000);
+  </script>
+</body>
+</html>
